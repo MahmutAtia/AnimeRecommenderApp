@@ -1,59 +1,99 @@
 from django.shortcuts import render, HttpResponse,get_object_or_404
 from rest_framework.decorators import api_view
 from rest_framework.response import Response 
-from rest_framework.viewsets import ModelViewSet
 from .models import Genre,Anime
-from .serializers import AnimeSerializer
-import pandas as pd 
-import pickle
-import os
-from pathlib import Path
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
+from .serializers import AnimeSerializer, GenreSerializer
+from rest_framework.generics import ListAPIView , ListCreateAPIView, RetrieveDestroyAPIView
+from .services import *
+
+
+class SearchListApi(ListAPIView):
+    queryset= Anime.objects.all()
+    serializer_class = AnimeSerializer
+
+    def get_queryset(self):
+        qs  = self.queryset
+        q = self.kwargs.get("q")
+        print(q)
+        q = q.replace("-"," ")
+        if not q:
+            return qs.none()
+        return qs.search(q)
+
+
+class RecommendApi(ListAPIView):
+    serializer_class = AnimeSerializer
+    lookup_field = "pk"
+    
+    def get_queryset(self):
+        pk = self.kwargs["pk"]
+        recommended = most_similar(pk)
+        anime_list = recommended.to_list()
+        qs = Anime.objects.filter(title__in= anime_list).order_by("-score").distinct()
+
+       #distinct(field) doesnt work for mysql 
+        titles=[]
+        qs_final = []
+        for obj in qs:
+            print(obj.title)
+            if obj.title in titles:
+                pass
+            else:
+                titles.append(obj.title)
+                qs_final.append(obj)
+
+                
+       
+        return qs_final
+
+
+class AnimeCreateListApi(ListCreateAPIView):
+    queryset = Anime.objects.all().distinct()
+    serializer_class = AnimeSerializer
+    
+class AnimeRUDApi(RetrieveDestroyAPIView):
+    queryset = Anime.objects.all().distinct()
+    serializer_class = AnimeSerializer
+    lookup_field = "pk"
+    
+
+class GenreCreateListApi(ListCreateAPIView):
+    queryset = Genre.objects.all().distinct()
+    serializer_class = GenreSerializer
+
+
+    
+
+class GenreRUDApi(ListAPIView):
+    serializer_class = AnimeSerializer
+    lookup_field = "pk"
+    queryset = Anime.objects.all().distinct()
+
+    def get_queryset(self):
+        pk = self.kwargs["pk"]  
+        qs = Anime.objects.filter(genre__pk = pk) 
+        return qs
+        
+    
+
+
+
+
+
 
 # Create your views here.
+# @api_view(["GET"])
+# def recommend(request,pk):
+#     recommended = most_similar(pk)
+#     anime_list = recommended.to_list()
+#     li = Anime.objects.filter(title__in= anime_list)
+#     serializer = AnimeSerializer(li,many=True)
 
-class AnimeApi(ModelViewSet):
-    serializer_class = AnimeSerializer
-    queryset = Anime.objects.all()[:100]
-
-    def retrieve(self, request,pk=None):
-        queryset = Anime.objects.all()
-        anime = get_object_or_404(queryset,pk=pk)
-        print(anime)
-        serializer_class = AnimeSerializer(anime)
-        return Response(serializer_class.data)
-    
-# class GenreApi(ModelViewSet):
-#     serializer_class = AnimeSerializer
-    
-
-#     def get_queryset(self):
-#         queryset = Anime.objects.all()
-#         pk = self.request.query_params.get('pk')
-#         queryset = queryset.filter(Genre=pk)
-#         return queryset
-
-@api_view(["GET"])   
-def get_genre(request,pk):
-    queryset = Anime.objects.all()
-    objects = queryset.filter(genre=pk)
-    serializer = AnimeSerializer(objects, many = True)
-            
-    return Response(serializer.data[:100])
+        
+#     return Response(serializer.data) 
 
 
 
-@api_view(["GET"])   
-def recommend(request,title):
-    path = Path(__file__).parent/Path("model.pkl")
-
-    with open(path, "rb" ) as f:
-        model = pickle.load(f)
-    print( model)
-
-            
-    return HttpResponse(f"hello world {title}")
 
 
 

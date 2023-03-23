@@ -1,13 +1,16 @@
 from django.urls import path,include
-from rest_framework.routers import DefaultRouter
-from .views import AnimeApi
+from .views import SearchListApi ,RecommendApi, AnimeCreateListApi,AnimeRUDApi,GenreCreateListApi,GenreRUDApi
 
-router = DefaultRouter()
-router.register('',AnimeApi, basename="anime")
+
 
 
 app_name = "anime"
 urlpatterns = [
-    path('', include(router.urls)),
+    path('',AnimeCreateListApi.as_view() ),
+    path('search/<slug:q>',SearchListApi.as_view()),
+    path('<int:pk>/', AnimeRUDApi.as_view()),
+    path('genre/',GenreCreateListApi.as_view()),
+    path('genre/<int:pk>',GenreRUDApi.as_view(), name = "detail-view"),
+    path('recommend/<int:pk>', RecommendApi.as_view(),name= "recommend-view")
     
 ]
