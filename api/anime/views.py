@@ -2,9 +2,15 @@ from django.shortcuts import render, HttpResponse,get_object_or_404
 from rest_framework.decorators import api_view
 from rest_framework.response import Response 
 from .models import Genre,Anime
-from .serializers import AnimeSerializer, GenreSerializer
-from rest_framework.generics import ListAPIView , ListCreateAPIView, RetrieveDestroyAPIView
+from .serializers import AnimeSerializer, GenreSerializer,UserSerialiser
+from rest_framework.generics import CreateAPIView, ListAPIView , ListCreateAPIView, RetrieveDestroyAPIView
 from .services import *
+
+class registerView(CreateAPIView):
+    serializer_class = UserSerialiser
+    
+
+
 
 
 class SearchListApi(ListAPIView):

@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_extensions',
     'algoliasearch_django',
+    'rest_framework.authtoken',
     # required for serving swagger ui's css/js files
     'drf_yasg',
     'corsheaders',
@@ -139,14 +140,20 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 40
+    'PAGE_SIZE': 40,
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',  # <-- And here
+    ],
+     
+    
+    
 }
-
 
 # White listing the localhost:3000 port
 # for React
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:3000',
+   "http://localhost:3001"
 )
 
 ALGOLIA = {

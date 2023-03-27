@@ -1,11 +1,12 @@
 import { useParams } from 'react-router-dom'
 
 import React from 'react'
+import { useLocation } from 'react-router-dom'
 
 export default function Detail_page() {
-  const {id}  =  useParams()
-  console.log(id)
+const location = useLocation()
+ 
   return (
-    <div>detail_page</div>
+    <div>{location.state}</div>
   )
 }

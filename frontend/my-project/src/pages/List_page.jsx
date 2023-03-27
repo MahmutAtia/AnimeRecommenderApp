@@ -1,5 +1,5 @@
 
-import Card from '../components/card';
+// import Card from '../components/card';
 import { useState,useEffect } from 'react';
 import axios from "axios";
 import Sidebar from '../components/sidebar';
@@ -7,6 +7,12 @@ import Overlay from '../components/overlay';
 import { PaginationNav1Presentation } from '../components/pagation';
 import Search from '../components/Search';
 import {kebabCase} from "kebab-case"
+import React from 'react';
+import store from '../store'
+import { Provider } from 'react-redux';
+const LazyCard = React.lazy(()=>import("../components/card"))
+
+
 
 
 
@@ -15,12 +21,19 @@ const [data,setData] = useState()
 // const [q, setq] = useState("");
 const [url,setUrl] = useState("http://127.0.0.1:8000/animes/")
 const [genre,setGenre] = useState()
+const [header,setHeader] = useState("All Animes")
 
 
 
 const recomend = function(url){
   setUrl(url)
 }
+
+const pull_title = function(header){
+    setHeader("MOST SIMILAR ANIMES TO: " + header.toUpperCase())
+    
+}
+
 const pull_q = function(data){
     data = data.replace(" ","-")
     if(data)    
@@ -51,17 +64,23 @@ if(!genre) return []
     <Search
     func = {pull_q}
      />
-    <div className=' flex flex-row p-2'>
+    <div className=' flex flex-row p-10'>
 
-    <div className=" top-0 ">
+    {/* <div className=" top-0 ">
       <Sidebar genre = {genre} />
-      </div>
-    <div className="flex-[0.9] grid gap-6 lg:grid-cols-3 ">
-    
-    
+      </div> */}
+
+    {/* column for header and cards */}
+    <div className='flex flex-col'>
+    <h1 className='text-4xl font-bold m-16 leading-relaxed border-b font-serif ml-10'>{header}</h1>
+      
+    <div className="flex-[0.9] grid gap-6 lg:grid-cols-4 p-5 ">
+    <React.Suspense fallback="Louding ..">
+     
 {
   data.results.map((obj,key)=>(
-      <Card 
+    
+      <LazyCard 
      key={obj.id}
      title = {obj.title}
      synopsis = {obj.synopsis}
@@ -69,11 +88,15 @@ if(!genre) return []
      recommend = {recomend}
      recommend_url = {obj.recommend_url}
      genre= {genre.filter((x,i)=>obj.genre.includes(i))}
+     func = {pull_title}
+     id = {obj.id}
+     obj = {obj}
      />
 
     ))}
-     
+     </React.Suspense>
 
+    </div>
     </div>
     {/* <PaginationNav1Presentation
     count={ data.count}
@@ -82,6 +105,7 @@ if(!genre) return []
      /> */}
     </div>
     </div>
+      
   );
 }
 

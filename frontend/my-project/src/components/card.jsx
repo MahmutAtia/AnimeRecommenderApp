@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Card({
   title,
@@ -8,10 +9,18 @@ export default function Card({
   recommend,
   key,
   genre,
+  func,
+  id,
+  obj
 }) {
   const handle_click = function () {
     recommend(recommend_url);
+    func(title);
   };
+
+  const navigate = useNavigate()
+
+  
 
   return (
     <div>
@@ -30,7 +39,7 @@ export default function Card({
 
         {/* overlayer with the text in one container */}
         
-        <div className="group relative w-full h-full">
+        <div onClick={()=> navigate("anime/"+id.toString(),{state:{title:obj.title}})} className="group relative w-full h-full">
           <div class="absolute bottom-0 left-0 w-full h-0 flex flex-col justify-center items-center bg-red-100 opacity-0 group-hover:h-full group-hover:opacity-90 duration-500">
             <h1 class="text-2xl text-black font-bold">See Details</h1>
           </div>

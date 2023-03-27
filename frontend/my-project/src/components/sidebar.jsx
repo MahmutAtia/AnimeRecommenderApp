@@ -29,7 +29,7 @@ if (!genre )return [];
     
     <div className="flex sticky top-10 items-center justify-center mr-10">
   <button id="dropdownDefault" data-dropdown-toggle="dropdown"
-    className="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+    className="text-black bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
     type="button">
     Filter by category
     <svg className="w-4 h-4 ml-2" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -39,7 +39,7 @@ if (!genre )return [];
   </button>
 
   {/* <!-- Dropdown menu --> */}
-  <div id="dropdown" className="z-10  w-56 p-3 bg-white rounded-lg shadow dark:bg-gray-700">
+  <div id="dropdown" className="z-10  w-56 p-3 bg-white rounded-lg shadow dark:bg-gray-100">
     <h6 className="mb-3 text-sm font-medium text-gray-900 dark:text-white">
       Category
     </h6>
