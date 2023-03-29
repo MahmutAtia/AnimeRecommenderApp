@@ -1,6 +1,6 @@
 
 // import Card from '../components/card';
-import { useState,useEffect } from 'react';
+import { useState,useEffect,useContext } from 'react';
 import axios from "axios";
 import Sidebar from '../components/sidebar';
 import Overlay from '../components/overlay';
@@ -10,6 +10,11 @@ import {kebabCase} from "kebab-case"
 import React from 'react';
 import store from '../store'
 import { Provider } from 'react-redux';
+import { redirect,useNavigate} from 'react-router-dom';
+import { UserContext } from '../UserContext';
+
+
+
 const LazyCard = React.lazy(()=>import("../components/card"))
 
 
@@ -22,10 +27,12 @@ const [data,setData] = useState()
 const [url,setUrl] = useState("http://127.0.0.1:8000/animes/")
 const [genre,setGenre] = useState()
 const [header,setHeader] = useState("All Animes")
+const navigate = useNavigate();
 
-
+console.log( useContext(UserContext).user);
 
 const recomend = function(url){
+  
   setUrl(url)
 }
 
@@ -40,12 +47,16 @@ const pull_q = function(data){
     {setUrl("http://localhost:8000/animes/search/"+data)}
 }
 
-
+// pull token value from the context
+const token = "1a26bc81098d4e5a0fc267f134a95464b32512fb"
+const {value,setValue}= useContext(UserContext)
 useEffect(() => {
-  axios.get(url).then((res)=>{
+  axios.get(url, ({headers: {
+    'Authorization': `Token ${token}` 
+  }})).then((res)=>{
     setData(res.data)
 
-    axios.get("http://127.0.0.1:8000/animes/genre/").then((res)=>{
+    axios.get("http://127.0.0.1:8000/animes/genre/", ).then((res)=>{
         setGenre(res.data.results)
       })
   })
@@ -59,8 +70,14 @@ if(!genre) return []
 
 
 
+
+
+
   return (
     <div>
+           
+     <button onClick={()=>navigate("/login")}> redirect</button>
+
     <Search
     func = {pull_q}
      />

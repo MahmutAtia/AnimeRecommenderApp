@@ -5,7 +5,8 @@ from .models import Genre,Anime
 from .serializers import AnimeSerializer, GenreSerializer,UserSerialiser
 from rest_framework.generics import CreateAPIView, ListAPIView , ListCreateAPIView, RetrieveDestroyAPIView
 from .services import *
-
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import authentication
 class registerView(CreateAPIView):
     serializer_class = UserSerialiser
     
@@ -30,6 +31,7 @@ class SearchListApi(ListAPIView):
 class RecommendApi(ListAPIView):
     serializer_class = AnimeSerializer
     lookup_field = "pk"
+    permission_classes = [IsAuthenticated]
     
     def get_queryset(self):
         pk = self.kwargs["pk"]
@@ -54,6 +56,9 @@ class RecommendApi(ListAPIView):
 
 
 class AnimeCreateListApi(ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [authentication.TokenAuthentication]
+
     queryset = Anime.objects.all().distinct()
     serializer_class = AnimeSerializer
     
