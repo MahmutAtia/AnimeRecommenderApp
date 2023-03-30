@@ -2,6 +2,8 @@ import requests
 import getpass
 url = "http://localhost:8000/animes/"
 auth = "http://localhost:8000/login/"
+auth = "http://localhost:8000/login/"
+
 # token =     "1a26bc81098d4e5a0fc267f134a95464b32512fb"
 
 
