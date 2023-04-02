@@ -12,9 +12,6 @@ import store from '../store'
 import { Provider } from 'react-redux';
 import { redirect,useNavigate} from 'react-router-dom';
 import { UserContext } from '../UserContext';
-
-
-
 const LazyCard = React.lazy(()=>import("../components/card"))
 
 
@@ -28,6 +25,7 @@ const [url,setUrl] = useState("http://127.0.0.1:8000/animes/")
 const [genre,setGenre] = useState()
 const [header,setHeader] = useState("All Animes")
 const navigate = useNavigate();
+const setToken= useContext(UserContext).setToken;
 
 console.log( useContext(UserContext).user);
 
@@ -47,13 +45,11 @@ const pull_q = function(data){
     {setUrl("http://localhost:8000/animes/search/"+data)}
 }
 
-// pull token value from the context
-const token = "1a26bc81098d4e5a0fc267f134a95464b32512fb"
-const {value,setValue}= useContext(UserContext)
 useEffect(() => {
-  axios.get(url, ({headers: {
-    'Authorization': `Token ${token}` 
-  }})).then((res)=>{
+  const token = localStorage.getItem("token")
+  console.log(token)
+  setToken(token)
+  axios.get(url).then((res)=>{
     setData(res.data)
 
     axios.get("http://127.0.0.1:8000/animes/genre/", ).then((res)=>{

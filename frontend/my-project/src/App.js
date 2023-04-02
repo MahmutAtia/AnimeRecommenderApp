@@ -7,10 +7,25 @@ import Login from "./pages/login";
 import { RequireAuth } from "react-auth-kit";
 import { UserContext } from "./UserContext";
 import { useState } from "react";
-// const LazyList = React.lazy(()=>import("./pages/List_page"))
+import axios from "axios";
+const LazyList = React.lazy(()=>import("./pages/List_page"))
 function App() {
-  const [value, setValue] = useState({token:null});
+ 
 
+
+ 
+// set headers in axios
+const setToken= function(token){
+    if(token){
+        axios.defaults.headers.common["Authorization"] = `Token ${token}`
+    }
+    else{
+        delete axios.defaults.headers.common["Authorization"]
+    }
+}
+
+// get token
+const token = localStorage.getItem("token")
  
 
 
@@ -18,14 +33,14 @@ function App() {
 
 
   return (
-    <UserContext.Provider value={{value,setValue}}>
+    <UserContext.Provider value={{token:token, setToken:setToken}}>
     <Routes>
       <Route path="/" element={
-      <List_page />
+     token ? <LazyList /> : <Login />
       } />
       <Route path="/anime/:id" element={<RequireAuth loginPath="/login"><Detail_page /> </RequireAuth> } />
       <Route path="*" element={<Notfound />} />
-      <Route path="/login" element={<Login />} />
+      <Route  path="/login" element={ <Login />} />
       
     </Routes>
     </UserContext.Provider>

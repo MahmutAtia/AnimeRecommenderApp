@@ -4,7 +4,7 @@ import { useState } from 'react';
 export default function Search({func}) {
 const [q, setq] = useState("");
 func(q);
-
+const [hidden,setHidden] = useState("lg:hidden")
 
   return (
     // <!-- component -->
@@ -14,7 +14,7 @@ func(q);
             <div className="flex items-center flex-shrink-0 text-gray-800 mr-16">
                 <span className="font-semibold text-xl tracking-tight">My Navbar</span>
             </div>
-            <div className="block lg:hidden ">
+            <div className="block lg:hidden">
                 <button
                     id="nav"
                     className="flex items-center px-3 py-2 border-2 rounded text-blue-700 border-blue-700 hover:text-blue-700 hover:border-blue-700">
@@ -61,7 +61,7 @@ func(q);
                    className="block text-md px-4 py-2 rounded text-blue-700 ml-2 font-bold hover:text-white mt-4 hover:bg-blue-700 lg:mt-0">Sign
                     in</a>
     
-                <a href="#"
+                <a href="/login"
                    className=" block text-md px-4  ml-2 py-2 rounded text-blue-700 font-bold hover:text-white mt-4 hover:bg-blue-700 lg:mt-0">login</a>
             </div>
         </div>
